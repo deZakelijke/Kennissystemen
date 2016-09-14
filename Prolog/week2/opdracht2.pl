@@ -10,16 +10,20 @@ eersteVraag(X):-
     buikpijn'.
 
 maakData([[mazelen,[hoofdpijn,buikpijn]],[rode_hond,[hoofdpijn,misselijk]]]).
+maakData([ziekte,ziekte2]).
 
-zoekZiekte([Ee
-matchZiekte([Ziekte, Symptomen],Symptoom,Lijst):-
-    (member(Symptoom,Symptomen),
-    delete(Symptomen,Symptoom,SymptomenNew),
-    Lijst = [Ziekte,SymptomenNew]);
-    (not(member(Symptoom,Symptomen)),
-    Lijst = []).
+matchZiekte([Ziekte, Symptomen],Symptoom,[Ziekte,SymptomenNew]):-
+    member(Symptoom,Symptomen),
+    delete(Symptomen,Symptoom,SymptomenNew).
 
-    
+zoekZiekte([Ziekte],Symptoom,[ZiekteNew]):-
+    matchZiekte(Ziekte,Symptoom, ZiekteNew).
+
+zoekZiekte([Ziekte,Ziektes],Symptoom,[ZiekteNew|ZiektesNew]):-
+    (matchZiekte(Ziekte,Symptoom,ZiekteNew),
+    ZiektesNew = Ziektes);
+    (zoekziekte(Ziektes,Symptoom,ZiektesNew),
+    ZiekteNew = ziekte).
 
 diagnose:-
     maakData(Data),
@@ -28,7 +32,7 @@ diagnose:-
     eersteVraag(T2),
     write(T2),
     read(Symp1),
-    zoekZiekte(Data,Symp1,newData),
-    write(newData).
+    zoekZiekte(Data,Symp1,NewData),
+    write(NewData).
 
 
