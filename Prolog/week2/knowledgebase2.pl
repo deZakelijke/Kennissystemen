@@ -79,28 +79,30 @@ uitslag verklaart vlekjes en blaasjes_op_een_rode_ondergrond en verspreide_rode_
 paarse_vlekjes verklaart licht_jeukende_paarse_vlekjes.
 jeukende_vlekjes verklaart licht_jeukende_paarse_vlekjes.
 
-% splitRule(X verklaart Y):-
-%	lijst maken,
-%		splitRule(A en B).
-
-
-test(Symptoom en Symptomen, X):-
-	append([Symptoom], [Symptomen], X).
+/*
+maakSymptomenLijst(Symptoom en Symptomen, SL, FinalList):-
+	append([Symptoom], SL, FinalList),
+	NSL = FinalList,
+	maakSymptomenLijst(Symptomen, NSL),
+	append([Symptoom], NSL, FinalList).
 
 maakSymptomenLijst([], _).
 
-maakSymptomenLijst(Symptoom en Symptomen, SL):-
-	maakSymptomenLijst(Symptomen, [Symptoom], SL).
+maakSymptomenLijst(Symptoom en Symptomen, FinalList):-
+	maakSymptomenLijst(Symptomen, [Symptoom], FinalList).
 
 maakSymptomenLijst(Symptoom, SL):-
 	append([Symptoom], SL, NSL),
 	maakSymptomenLijst([], NSL).
+*/
 
-maakSymptomenLijst(Symptoom en Symptomen, SL, NSL):-
-	append([Symptoom], SL, NSL),
-	maakSymptomenLijst(Symptomen, NSL).
+msl(Symptomen, SymptomenLijst):-
+	msl(Symptomen, [], SymptomenLijst).
 
+msl(Symptoom en Symptomen, Lijst, EindLijst):-
+	append([Symptoom], Lijst, NieuweLijst),
+	msl(Symptomen, NieuweLijst, EindLijst). 	
 
-
-
-
+msl(Symptoom, SymptomenLijst, EindLijst):-
+	not(Symptoom = _ en _),
+	append([Symptoom], SymptomenLijst, EindLijst).
