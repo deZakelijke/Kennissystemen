@@ -10,20 +10,28 @@ eersteVraag(X):-
     buikpijn'.
 
 maakData([[mazelen,[hoofdpijn,buikpijn]],[rode_hond,[hoofdpijn,misselijk]]]).
-maakData([ziekte,ziekte2]).
 
+% Checks to find if Symptoom is a symptom of ziekte
 matchZiekte([Ziekte, Symptomen],Symptoom,[Ziekte,SymptomenNew]):-
     member(Symptoom,Symptomen),
     delete(Symptomen,Symptoom,SymptomenNew).
 
-zoekZiekte([Ziekte],Symptoom,[ZiekteNew]):-
-    matchZiekte(Ziekte,Symptoom, ZiekteNew).
+% Checks for Symptoom. Either Ziekte is removed or Symptoom is removed from a match
+zoekZiekte([Ziekte],Symptoom,Out):-
+    (matchZiekte(Ziekte,Symptoom,ZiekteOut),
+    Out = [ZiekteOut]);
+    (not(matchZiekte(Ziekte,Symptoom,_)),
+    Out = []).
 
-zoekZiekte([Ziekte,Ziektes],Symptoom,[ZiekteNew|ZiektesNew]):-
-    (matchZiekte(Ziekte,Symptoom,ZiekteNew),
-    ZiektesNew = Ziektes);
-    (zoekziekte(Ziektes,Symptoom,ZiektesNew),
-    ZiekteNew = ziekte).
+% Recursive of above
+zoekZiekte([Ziekte|Ziektes],Symptoom,Out):-
+    (matchZiekte(Ziekte,Symptoom,ZiekteOut),
+    zoekZiekte(Ziektes,Symptoom,ZiektesOut),
+    Out = [ZiekteOut|ZiektesOut]);
+    (not(matchZiekte(Ziekte,Symptoom,_)),
+    zoekZiekte(Ziektes,Symptoom,ZiektesOut),
+    Out = ZiektesOut).
+
 
 diagnose:-
     maakData(Data),
