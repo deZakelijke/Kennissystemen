@@ -8,8 +8,9 @@ eersteVraag(X):-
     X = 'De eerste vraag is: Wat is één van uw symptomen? U kunt kiezen uit de volgende opties:
     hoofdpijn
     buikpijn'.
+
 volgendeVraag(X):-
-    X = 'Dankuwel. '.
+    X = 'Dankuwel. Heeft u last van het volgende symptoom? graag met ja of nee beantwoorden.'.
 
 incorrectAntwoord(X):-
     X = 'Dat is geen valide antwoord. Graag antwoorden met ja of nee'.
@@ -39,10 +40,28 @@ zoekZiekte([Ziekte|Ziektes],Symptoom,Out):-
 
 % Pakt het volgende symptoom uit de database waar nog niet naar is gevraagd
 volgendSymptoom([[Ziekte|Symptomen]|Ziektes],AlGevraagd,Symptoom):-
-    (member(Symptoom,Symptomen),
+    (member(Symptoom,[Symptomen]),
+    write(Symptomen),
+    write('\n'),
+    write(Symptoom),
+    write('\n'),
     not(member(Symptoom,AlGevraagd)));
     volgendSymptoom(Ziektes,Algevraagd,Symptoom).
-    
+
+% Vraag naar een volgend symptoom, herhaal tot er een gevonden is
+vraagSymptoom(Data,AlGevraagd,SymptoomOut,AlGevraagdNew):-
+    volgendeVraag(Vraag), 
+    write(Vraag),
+    volgendSymptoom(Data,AlGevraagd,SymptoomIn),
+    write('check \n'),
+    write(SymptoomIn),
+    antwoord(Antwoord),
+    (Antwoord = ja,
+    SymptoomOut = SymptoomIn,
+    AlGevraagdNew = AlGevraagd);
+    (Antwoord = nee,
+    AlGevraagdUpdate = [SymptoomIn|Algevraagd],
+    vraagOpnieuw(Data,AlGevraagdUpdate,SymptoomOut,AlGevraagdNew)).
 
 % ask for a ja or a nee, otherwise retry
 antwoord(CorrectAntwoord):-
@@ -55,9 +74,15 @@ antwoord(CorrectAntwoord):-
     write(X),
     antwoord(CorrectAntwoord))).
 
+% Diagnosticeer tot er nog één ziekte is
+diagnosticeer([LaatsteZiekte],[LaatsteZiekte],_).
 
-% ask for the next symptom
-%ask([
+diagnosticeer(Data,GereduceerdeData,AlGevraagd):-
+    vraagSymptoom(Data,AlGevraagd,Symptoom,AlGevraagdNew),
+    zoekZiekte(Data,Symptoom,NewData),
+    write(Symptoom),
+    diagnosticeer(NewData,GereduceerdeData,AlGevraagdNew).
+
 
 diagnose:-
     maakData(Data),
@@ -67,8 +92,9 @@ diagnose:-
     write(T2),
     read(Symp1),
     zoekZiekte(Data,Symp1,NewData),
-    volgendSymptoom(NewData,[],Symp2),
-    write(Symp2).
+    write(NewData),
+    diagnosticeer(Data,[Ziekte|_],[]),
+    write(Ziekte).
     %ask(NewData,Symp2),
     %zoekZiekte(NewData,Symp1,NewData2),
     %write(NewData2).
