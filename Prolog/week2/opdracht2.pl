@@ -39,12 +39,8 @@ zoekZiekte([Ziekte|Ziektes],Symptoom,Out):-
     Out = ZiektesOut).
 
 % Pakt het volgende symptoom uit de database waar nog niet naar is gevraagd
-volgendSymptoom([[Ziekte|Symptomen]|Ziektes],AlGevraagd,Symptoom):-
-    (member(Symptoom,[Symptomen]),
-    write(Symptomen),
-    write('\n'),
-    write(Symptoom),
-    write('\n'),
+volgendSymptoom([[Ziekte|[Symptomen]]|Ziektes],AlGevraagd,Symptoom):-
+    (member(Symptoom,Symptomen),
     not(member(Symptoom,AlGevraagd)));
     volgendSymptoom(Ziektes,Algevraagd,Symptoom).
 
@@ -75,7 +71,7 @@ antwoord(CorrectAntwoord):-
     antwoord(CorrectAntwoord))).
 
 % Diagnosticeer tot er nog één ziekte is
-diagnosticeer([LaatsteZiekte],[LaatsteZiekte],_).
+diagnosticeer([LaatsteZiekte],LaatsteZiekte,_).
 
 diagnosticeer(Data,GereduceerdeData,AlGevraagd):-
     vraagSymptoom(Data,AlGevraagd,Symptoom,AlGevraagdNew),
@@ -92,8 +88,8 @@ diagnose:-
     write(T2),
     read(Symp1),
     zoekZiekte(Data,Symp1,NewData),
-    write(NewData),
-    diagnosticeer(Data,[Ziekte|_],[]),
+    diagnosticeer(NewData,[Ziekte|_],[]),
+    write('Je hebt: '),
     write(Ziekte).
     %ask(NewData,Symp2),
     %zoekZiekte(NewData,Symp1,NewData2),
