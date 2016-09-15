@@ -8,6 +8,11 @@ eersteVraag(X):-
     X = 'De eerste vraag is: Wat is één van uw symptomen? U kunt kiezen uit de volgende opties:
     hoofdpijn
     buikpijn'.
+volgendeVraag(X):-
+    X = 'Dankuwel. '.
+
+incorrectAntwoord(X):-
+    X = 'Dat is geen valide antwoord. Graag antwoorden met ja of nee'.
 
 maakData([[mazelen,[hoofdpijn,buikpijn]],[rode_hond,[hoofdpijn,misselijk]]]).
 
@@ -32,6 +37,27 @@ zoekZiekte([Ziekte|Ziektes],Symptoom,Out):-
     zoekZiekte(Ziektes,Symptoom,ZiektesOut),
     Out = ZiektesOut).
 
+% Pakt het volgende symptoom uit de database waar nog niet naar is gevraagd
+volgendSymptoom([[Ziekte|Symptomen]|Ziektes],AlGevraagd,Symptoom):-
+    (member(Symptoom,Symptomen),
+    not(member(Symptoom,AlGevraagd)));
+    volgendSymptoom(Ziektes,Algevraagd,Symptoom).
+    
+
+% ask for a ja or a nee, otherwise retry
+antwoord(CorrectAntwoord):-
+    read(Antwoord),
+    ((Antwoord = ja,
+    CorrectAntwoord = ja),!;
+    (Antwoord = nee,
+    CorrectAntwoord = nee),!;
+    (incorrectAntwoord(X),
+    write(X),
+    antwoord(CorrectAntwoord))).
+
+
+% ask for the next symptom
+%ask([
 
 diagnose:-
     maakData(Data),
@@ -41,6 +67,10 @@ diagnose:-
     write(T2),
     read(Symp1),
     zoekZiekte(Data,Symp1,NewData),
-    write(NewData).
+    volgendSymptoom(NewData,[],Symp2),
+    write(Symp2).
+    %ask(NewData,Symp2),
+    %zoekZiekte(NewData,Symp1,NewData2),
+    %write(NewData2).
 
 
