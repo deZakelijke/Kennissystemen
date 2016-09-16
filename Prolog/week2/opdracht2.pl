@@ -7,10 +7,13 @@ openingtext(X):-
 eersteVraag(X):-
     X = 'De eerste vraag is: Wat is één van uw symptomen? U kunt kiezen uit de volgende opties:
     hoofdpijn
-    buikpijn'.
+    buikpijn\n'.
 
 volgendeVraag(X):-
-    X = 'Dankuwel. Heeft u last van het volgende symptoom? graag met ja of nee beantwoorden.'.
+    X = 'Dankuwel. Heeft u last van het volgende symptoom? graag met ja of nee beantwoorden.\n'.
+
+herhaalVraag(X):-
+    X = 'Heeft u dan wel last van dit symptoom? \n'.
 
 incorrectAntwoord(X):-
     X = 'Dat is geen valide antwoord. Graag antwoorden met ja of nee'.
@@ -44,19 +47,39 @@ volgendSymptoom([[Ziekte|[Symptomen]]|Ziektes],AlGevraagd,Symptoom):-
     not(member(Symptoom,AlGevraagd)));
     volgendSymptoom(Ziektes,Algevraagd,Symptoom).
 
+% Deze versie is voor als de eerste ziekte in de lijst geen symptomen meer heeft waar niet naar gevraagd is.
+volgendSymptoom([[_|[Symptomen]]|Ziektes],AlGevraagd,Symptoom):-
+   permutation(Symptomen,AlGevraagd),
+   volgendSymptoom(Ziektes,AlGevraagd,Symptoom).
+
 % Vraag naar een volgend symptoom, herhaal tot er een gevonden is
 vraagSymptoom(Data,AlGevraagd,SymptoomOut,AlGevraagdNew):-
     volgendeVraag(Vraag), 
     write(Vraag),
     volgendSymptoom(Data,AlGevraagd,SymptoomIn),
-    write('check \n'),
     write(SymptoomIn),
+    write('\n'),
     antwoord(Antwoord),
     (Antwoord = ja,
     SymptoomOut = SymptoomIn,
     AlGevraagdNew = AlGevraagd);
     (Antwoord = nee,
     AlGevraagdUpdate = [SymptoomIn|Algevraagd],
+    vraagOpnieuw(Data,AlGevraagdUpdate,SymptoomOut,AlGevraagdNew)).
+
+% afhandelen wat er moet gebeuren als iemand nee antwoord op een vraag
+vraagOpnieuw(Data,AlGevraagd,SymptoomOut,AlGevraagdNew):-
+    herhaalVraag(Vraag),
+    write(Vraag),
+    volgendSymptoom(Data,AlGevraagd,SymptoomIn),
+    write(SymptoomIn),
+    write('\n'),
+    antwoord(Antwoord),
+    (Antwoord = ja,
+    SymptoomOut = SymptoomIn,
+    AlGevraagdNew = AlGevraagd);
+    (Antwoord = nee,
+    AlGevraagdUpdate = [SymptoomIn|AlGevraagd],
     vraagOpnieuw(Data,AlGevraagdUpdate,SymptoomOut,AlGevraagdNew)).
 
 % ask for a ja or a nee, otherwise retry
@@ -76,7 +99,6 @@ diagnosticeer([LaatsteZiekte],LaatsteZiekte,_).
 diagnosticeer(Data,GereduceerdeData,AlGevraagd):-
     vraagSymptoom(Data,AlGevraagd,Symptoom,AlGevraagdNew),
     zoekZiekte(Data,Symptoom,NewData),
-    write(Symptoom),
     diagnosticeer(NewData,GereduceerdeData,AlGevraagdNew).
 
 
@@ -88,7 +110,7 @@ diagnose:-
     write(T2),
     read(Symp1),
     zoekZiekte(Data,Symp1,NewData),
-    diagnosticeer(NewData,[Ziekte|_],[]),
+    diagnosticeer(NewData,[Ziekte|_],[]),!,
     write('Je hebt: '),
     write(Ziekte).
     %ask(NewData,Symp2),
