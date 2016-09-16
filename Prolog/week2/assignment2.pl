@@ -15,13 +15,15 @@ verklaart(A,_):- niet(A).
 
 
 
-main:-
+program:-
 	open('knowledgebase2.txt', read, Str),
 	read_kb(Str, KB),!,
 	close(Str),
-	mzl(KB, Test),
-	delete(Test, end_of_file, Test1),
-	write(Test1), nl.
+	mzl(KB, ZSL, ASL),
+	delete(ZSL, end_of_file, ZiekteSymptomenLijst),
+	write(ZiekteSymptomenLijst), nl,
+	write(ASL).
+
 
 read_kb(Stream, []):-
 	at_end_of_stream(Stream).
@@ -31,18 +33,19 @@ read_kb(Stream, [H|T]):-
 	read(Stream, H),
 	read_kb(Stream, T).
 
-mzl(Input, Output):-
-	mzl(Input, [], Output).
+mzl(Input, Output, ASL):-
+	mzl(Input, [], Output, ASL).
 
-mzl([H|T], Lijst, EindLijst):-
-	mzsc(H, ZiekteSymptoomCombinatie),
+mzl([H|T], Lijst, EindLijst, ASL):-
+	mzsc(H, ZiekteSymptoomCombinatie, SymptomenLijst),
 	append(Lijst, [ZiekteSymptoomCombinatie], ZiekteLijst),
-	mzl(T, ZiekteLijst, EindLijst).
+	append(ASL, ASL1, ASL2),
+	mzl(T, ZiekteLijst, EindLijst, ASL2).
 
-mzl(H, Lijst, EindLijst):-
+mzl(H, Lijst, EindLijst, _):-
 append(Lijst, H, EindLijst).
 
-mzsc(Ziekte verklaart Symptomen, ZiekteSymptoomCombinatie):-
+mzsc(Ziekte verklaart Symptomen, ZiekteSymptoomCombinatie, SymptomenLijst):-
 	msl(Symptomen, SymptomenLijst),
 	ZiekteSymptoomCombinatie = [Ziekte, SymptomenLijst].
 
