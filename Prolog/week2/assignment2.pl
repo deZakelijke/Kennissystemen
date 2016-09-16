@@ -15,12 +15,13 @@ verklaart(A,_):- niet(A).
 
 
 
-maakData(ZiekteSymptomenLijst):- 
+maakData(ZiekteSymptomenLijst, AlleSymptomenLijst):- 
 	open('knowledgebase2.txt', read, Str),
 	read_kb(Str, KB),!,
 	close(Str),
 	mzl(KB, ZSL),
-	delete(ZSL, end_of_file, ZiekteSymptomenLijst).
+	delete(ZSL, end_of_file, ZiekteSymptomenLijst),
+	asl(ZiekteSymptomenLijst, AlleSymptomenLijst).
 
 read_kb(Stream, []):-
 	at_end_of_stream(Stream).
@@ -56,3 +57,14 @@ msl(Symptoom en Symptomen, Lijst, EindLijst):-
 msl(Symptoom, SymptomenLijst, EindLijst):-
 	not(Symptoom = _ en _),
 	append([Symptoom], SymptomenLijst, EindLijst).
+
+asl(Input, Output):-
+	asl(Input, [], Output).
+
+asl([H|T], Lijst, ASL):-
+	H = [_,Symptomen],
+	append(Symptomen, Lijst, ASL1),
+	asl(T, ASL1,ASL).
+
+asl(H, Lijst, ASL):-
+	append(H, Lijst, ASL).	
