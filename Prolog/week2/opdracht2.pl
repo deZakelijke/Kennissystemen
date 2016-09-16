@@ -37,13 +37,13 @@ afsluiting(X):-
 geenUitsluitsel(X):-
     X = 'Het is ons niet gelukt om te betpalen welke ziekte u heeft'.
 
-maakData(ZiekteSymptomenLijst):- % AANGEPAST
+maakData(ZiekteSymptomenLijst, AlleSymptomenLijst):- 
 	open('knowledgebase2.txt', read, Str),
 	read_kb(Str, KB),!,
 	close(Str),
-	mzl(KB, ZSL, ASL),
-	delete(ZSL, end_of_file, ZiekteSymptomenLijst). % WRITES WEG
-
+	mzl(KB, ZSL),
+	delete(ZSL, end_of_file, ZiekteSymptomenLijst),
+	asl(ZiekteSymptomenLijst, AlleSymptomenLijst).
 
 read_kb(Stream, []):-
 	at_end_of_stream(Stream).
@@ -53,19 +53,18 @@ read_kb(Stream, [H|T]):-
 	read(Stream, H),
 	read_kb(Stream, T).
 
-mzl(Input, Output, ASL):-
-	mzl(Input, [], Output, ASL).
+mzl(Input, Output):-
+	mzl(Input, [], Output).
 
-mzl([H|T], Lijst, EindLijst, ASL):-
-	mzsc(H, ZiekteSymptoomCombinatie, SymptomenLijst),
+mzl([H|T], Lijst, EindLijst):-
+	mzsc(H, ZiekteSymptoomCombinatie),
 	append(Lijst, [ZiekteSymptoomCombinatie], ZiekteLijst),
-	append(ASL, ASL1, ASL2),
-	mzl(T, ZiekteLijst, EindLijst, ASL2).
+	mzl(T, ZiekteLijst, EindLijst).
 
-mzl(H, Lijst, EindLijst, _):-
+mzl(H, Lijst, EindLijst):-
 append(Lijst, H, EindLijst).
 
-mzsc(Ziekte verklaart Symptomen, ZiekteSymptoomCombinatie, SymptomenLijst):-
+mzsc(Ziekte verklaart Symptomen, ZiekteSymptoomCombinatie):-
 	msl(Symptomen, SymptomenLijst),
 	ZiekteSymptoomCombinatie = [Ziekte, SymptomenLijst].
 
@@ -81,12 +80,17 @@ msl(Symptoom, SymptomenLijst, EindLijst):-
 	not(Symptoom = _ en _),
 	append([Symptoom], SymptomenLijst, EindLijst).
 
-maakSymptomen([[_,Symptomen]],Symptomen).
-maakSymptomen([[_,Symptomen]|Ziektes],GoedeSymptomen):-
-    maakSymptomen(Ziektes,Symptomen2),
-    append(Symptomen,Symptomen2,MeerSymptomen),
-    set(MeerSymptomen,GoedeSymptomen).
-    
+asl(Input, Output):-
+	asl(Input, [], Output).
+
+asl([H|T], Lijst, ASL):-
+	H = [_,Symptomen],
+	append(Symptomen, Lijst, ASL1),
+	asl(T, ASL1,ASL).
+
+asl(H, Lijst, ASL):-
+	append(H, Lijst, ASL).	
+
 set([],[]).
 set([H|T],[H|Out]) :-
     not(member(H,T)),
@@ -171,8 +175,7 @@ diagnosticeer(Data,GereduceerdeData,AlGevraagd,MogelijkeSymptomen):-
 
 
 diagnose:-
-    maakData(Data),
-    maakSymptomen(Data,MogelijkeSymptomen),
+    maakData(Data,MogelijkeSymptomen),
     openingtext(T1),
     write(T1),
     eersteVraag(T2),
