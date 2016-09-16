@@ -15,14 +15,12 @@ verklaart(A,_):- niet(A).
 
 
 
-program:-
+maakData(ZiekteSymptomenLijst):- % AANGEPAST
 	open('knowledgebase2.txt', read, Str),
 	read_kb(Str, KB),!,
 	close(Str),
 	mzl(KB, ZSL, ASL),
-	delete(ZSL, end_of_file, ZiekteSymptomenLijst),
-	write(ZiekteSymptomenLijst), nl,
-	write(ASL).
+	delete(ZSL, end_of_file, ZiekteSymptomenLijst). % WRITES WEG
 
 
 read_kb(Stream, []):-
