@@ -38,7 +38,7 @@ ziekte_van_Filatov_Dukes verklaart koorts en hoofdpijn
 parotitis verklaart diarree en oorontsteking 
 	en opgezette_lymfeknopen en uitslag en hoge_koorts 
 	en koorts en verhoging en ontsteking en darmklachten.
-swi
+
 
 % symptomen van infectiosum. Bron: https://nl.wikipedia.org/wiki/Zesde_ziekte
 infectiosum verklaart grote_en_kleine_vlekjes_door_elkaar 

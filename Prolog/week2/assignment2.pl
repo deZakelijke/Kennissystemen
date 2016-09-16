@@ -20,7 +20,7 @@ maakData(ZiekteSymptomenLijst):-
 	read_kb(Str, KB),!,
 	close(Str),
 	mzl(KB, ZSL),
-	delete(ZSL, end_of_file, ZSL2).
+	delete(ZSL, end_of_file, ZiekteSymptomenLijst).
 
 read_kb(Stream, []):-
 	at_end_of_stream(Stream).
