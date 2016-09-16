@@ -1,6 +1,6 @@
 % Opdracht 2 Micha de Groot en Kaj Meijer
 
-% Knowledge base van Micha de Groot-10434410 en Kaj Meijer-10509534
+% Diagnoseprogramma van Micha de Groot-10434410 en Kaj Meijer-10509534
 % studie@michadegroot.nl en k.d.meijer17@gmail.com
 % Kennissystemen 2016 tweede opdracht
 
@@ -15,8 +15,14 @@
 % Er wordt aangenomen dat de gebruiker voldoende symptomen heeft om tot een uniekte ziekte uit te komen.
 % De gebruiker hoeft niet per se alle symptomen te hebben van de uiteindelijke ziekte.
 % Het systeem zoekt het volgende symptoom om naar te vragen door bij de nog overgebleven ziektes
-% Te kijken naar welk symptomen nog niet gevraagd is.
+% te kijken naar welk symptomen nog niet gevraagd is.
 
+% Het programma werkt bijna helemaal goed, maar in sommige gevallen gebeurt er iets raars.
+% Na enekel vragen wordt er wel steeds een nieuw symptoom geprint en input gevraagd,
+% maar ja of nee intypen beantwoord niet een vraag en helpt het programma ook niet verder.
+% De bug die dit veroorzaakt hebben we niet weten te achterhalen doordat er een 
+% enorm lange Trace moet worden doorlopen, die ook nog eens vrij onduidelijk is.
+% Als de ziekte met een paar vragen achterhaald kan worden werkt het goed.
 % operators die we moeten toevoegen
 :- op(300, xfy, en).
 :- op(700, xfy, verklaart).
