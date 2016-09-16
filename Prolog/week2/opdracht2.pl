@@ -37,6 +37,12 @@ afsluiting(X):-
 geenUitsluitsel(X):-
     X = 'Het is ons niet gelukt om te betpalen welke ziekte u heeft'.
 
+printSymptomen([Symptoom]):-
+    write(Symptoom),nl.
+printSymptomen([Symptoom|Symptomen]):-
+    write(Symptoom),nl,
+    printSymptomen(Symptomen).
+
 maakData(ZiekteSymptomenLijst, AlleSymptomenLijst):- 
 	open('knowledgebase2.txt', read, Str),
 	read_kb(Str, KB),!,
@@ -175,12 +181,13 @@ diagnosticeer(Data,GereduceerdeData,AlGevraagd,MogelijkeSymptomen):-
 
 
 diagnose:-
-    maakData(Data,MogelijkeSymptomen),
+    maakData(Data,MogelijkeSymptomen1),
+    set(MogelijkeSymptomen1,MogelijkeSymptomen),
     openingtext(T1),
     write(T1),
     eersteVraag(T2),
     write(T2),nl,
-    write(MogelijkeSymptomen),nl,
+    printSymptomen(MogelijkeSymptomen),
     read(Symp1),
     zoekZiekte(Data,Symp1,NewData),
     delete(MogelijkeSymptomen,Symp1,RedSymptomen),
