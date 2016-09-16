@@ -2,7 +2,20 @@
 
 % Knowledge base van Micha de Groot-10434410 en Kaj Meijer-10509534
 % studie@michadegroot.nl en k.d.meijer17@gmail.com
-% Kennissystemen 2016 eerste opdracht
+% Kennissystemen 2016 tweede opdracht
+
+% Het maakData predicaat leest de Ziekte verklaart Symptoom regels uit en interpreteert die
+% Het zoekZiekte predicaat matcht een symptoom met een van de ziektes die ingelezen zijn ut het kennisbestand
+% en 'verwijderd' de ziektes die dat symptoom niet hebben
+% Daarna wordt er door middel van ja/nee vragen meer informatie vergaard en worden er 
+% meer ziektes uitgesloten.
+% Als er nog maar één mogelijke ziekte is dan wordt de conclusie getrokken dat de gebruiker
+% die ziekte heeft
+
+% Er wordt aangenomen dat de gebruiker voldoende symptomen heeft om tot een uniekte ziekte uit te komen.
+% De gebruiker hoeft niet per se alle symptomen te hebben van de uiteindelijke ziekte.
+% Het systeem zoekt het volgende symptoom om naar te vragen door bij de nog overgebleven ziektes
+% Te kijken naar welk symptomen nog niet gevraagd is.
 
 % operators die we moeten toevoegen
 :- op(300, xfy, en).
@@ -138,12 +151,12 @@ vraagSymptoom(AlGevraagd,SymptoomOut,AlGevraagdNew,MogelijkeSymptomen):-
     volgendSymptoom(MogelijkeSymptomen,AlGevraagd,SymptoomIn),
     write(SymptoomIn),nl,
     antwoord(Antwoord),
-    (Antwoord = ja,
+    ((Antwoord = ja,
     SymptoomOut = SymptoomIn,
     AlGevraagdNew = AlGevraagd);
     (Antwoord = nee,
-    AlGevraagdUpdate = [SymptoomIn|Algevraagd],
-    vraagOpnieuw(AlGevraagdUpdate,SymptoomOut,AlGevraagdNew,MogelijkeSymptomen)).
+    AlGevraagdUpdate = [SymptoomIn|AlGevraagd],
+    vraagOpnieuw(AlGevraagdUpdate,SymptoomOut,AlGevraagdNew,MogelijkeSymptomen))).
 
 % afhandelen wat er moet gebeuren als iemand nee antwoord op een vraag
 vraagOpnieuw(AlGevraagd,SymptoomOut,AlGevraagdNew,MogelijkeSymptomen):-
