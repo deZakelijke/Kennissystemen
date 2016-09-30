@@ -28,16 +28,16 @@ model2([T1, T2, T3, T4, T5, T6, T7, T8], AnswerMultiplier, AnswerAdder) :-
 	adder(T7, T8, AnswerAdder).
         
 
-askLoop([T],T).
-askLoop([Ta|Trest],WrongT):-
-    (askT(Ta,Value),     %Ta should be the name of T
+askLoop(,[_],[T],T).
+askLoop([Ta|Trest],[Tname|Trestname],WrongT):-
+    (askT(Tname,Value),     %Ta should be the name of T
     Value = Ta,
-    askLoop(Trest,WrongT);
+    askLoop(Trest,Trestname,WrongT);
     WrongT is Ta.
 
 diagnose:-
     model1(Tlist,Answer),
-    askLoop(Tlist,WrongT).
+    askLoop(Tlist,[t1,t2,t3,t4,t5,t6,t7,t8],WrongT).
 
 askT(T,Value):-
     write("what is the value of: "),
