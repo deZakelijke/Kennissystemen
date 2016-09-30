@@ -8,14 +8,14 @@ multiplier(Input1, Input2, Output):-
 	Output is Input1 * Input2.
 
 % Model 1 from the assignment
-model1(T1, T2, T3, Answer) :-
+model1([T1, T2, T3], Answer) :-
 	adder(1, 1, T1),
 	multiplier(5, T1, T3),
 	multiplier(3, 2, T2),
 	adder(T2, T3, Answer).
 
 % Model 2 of the assignment
-model2(T1, T2, T3, T4, T5, T6, T7, T8, AnswerMultiplier, AnswerAdder) :-
+model2([T1, T2, T3, T4, T5, T6, T7, T8], AnswerMultiplier, AnswerAdder) :-
 	multiplier(3, 2, T1),
 	multiplier(3, 2, T2),
 	multiplier(3, 2, T3),
@@ -27,6 +27,17 @@ model2(T1, T2, T3, T4, T5, T6, T7, T8, AnswerMultiplier, AnswerAdder) :-
 	multiplier(T7, T8, AnswerMultiplier),
 	adder(T7, T8, AnswerAdder).
         
+
+askLoop([T],T).
+askLoop([Ta|Trest],WrongT):-
+    (askT(Ta,Value),     %Ta should be the name of T
+    Value = Ta,
+    WrongT is Ta);       %Ta should be the name
+    (askLoop(Trest,WrongT).
+
+diagnose:-
+    model1(Tlist,Answer),
+    askLoop(Tlist,WrongT).
 
 askT(T,Value):-
     write("what is the value of: "),
