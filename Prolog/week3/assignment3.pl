@@ -26,3 +26,9 @@ model2(AnswerMultiplier, AnswerAdder) :-
 	multiplier(T5, T6, T8),
 	multiplier(T7, T8, AnswerMultiplier),
 	adder(T7, T8, AnswerAdder).
+        
+
+askT(T,Value):-
+    write("what is the value of: "),
+    write(T),nl
+    read(value).
