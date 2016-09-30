@@ -32,8 +32,8 @@ askLoop([T],T).
 askLoop([Ta|Trest],WrongT):-
     (askT(Ta,Value),     %Ta should be the name of T
     Value = Ta,
-    WrongT is Ta);       %Ta should be the name
-    (askLoop(Trest,WrongT).
+    askLoop(Trest,WrongT);
+    WrongT is Ta.
 
 diagnose:-
     model1(Tlist,Answer),
