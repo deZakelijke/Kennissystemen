@@ -1,3 +1,10 @@
+% Made by Micha de Groot and Kaj Meijer
+% 1: De model predicaten modelleren het werkende systeem
+% Diagram 1 heeft als input in het begin 1,1,5,3,2
+% Diagram 2 heeft als input 3,2,2,3,3
+% Ons programma voorspelt niet echt iets
+% In het askLoop predicaat wordt de gemeten input vergeleken met correcte waardes
+% 2: Het systeem is niet een slim systeem en zoekt niet naar optimale metingen
 
 % A standard adder
 adder(Input1, Input2, Output):-
